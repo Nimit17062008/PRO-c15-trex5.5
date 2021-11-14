@@ -1,6 +1,8 @@
 var PLAY = 1;
 var END = 0;
 var gameState = PLAY;
+var gameOver,restart;
+var gameOverImg,restartImg
 
 var trex, trex_running, trex_collided;
 var ground, invisibleGround, groundImage;
@@ -26,6 +28,9 @@ function preload(){
   obstacle5 = loadImage("obstacle5.png");
   obstacle6 = loadImage("obstacle6.png");
   
+  gameOverImg = loadImage("gameOver.png");
+  restartImg = loadImage("restart.png");
+
 }
 
 function setup() {
@@ -54,6 +59,14 @@ function setup() {
   trex.debug = true
   
   score = 0
+
+  gameOver = createSprite(300,100)
+  gameOver.addImage(gameOverImg)
+
+  restart= createSprite(300,140)
+  restart.addImage(restartImg)
+gameOver.scale= 0.5
+restart.scale = 0.5
 }
 
 function draw() {
@@ -69,13 +82,14 @@ function draw() {
     ground.velocityX = -4;
     //scoring
     score = score + Math.round(frameCount/60);
-    
+    gameOver.visible = false ;
+    restart.visible = false ;
     if (ground.x < 0){
       ground.x = ground.width/2;
     }
     
     //jump when the space key is pressed
-    if(keyDown("space")&& trex.y >=100) {
+    if(keyDown("space")&& trex.y >=156) {
         trex.velocityY = -13;
     }
     
@@ -97,7 +111,15 @@ function draw() {
      
      obstaclesGroup.setVelocityXEach(0);
      cloudsGroup.setVelocityXEach(0);
-   }
+     obstaclesGroup.setLifetimeEach(-1);
+     cloudsGroup.setLifetimeEach(-1);
+     trex.changeAnimation("collided" , trex_collided)
+     trex.vrelocityY=0;
+     gameOver.visible = true ;
+     restart.visible = true ;
+    
+    }
+    
   
  
   //stop trex from falling down
